@@ -35,23 +35,25 @@
 #include <Arduino.h>
 #include <Adafruit_LEDBackpack.h>
 
-#define SEGMENT_COUNT 24
+#define DEFAULT_SEGMENT_COUNT 24
 #define DEFAULT_ADDR 0x70
 
 class Bargraph {
   public:
     Bargraph::Bargraph();
     Bargraph::Bargraph(uint8_t addr);
+    Bargraph::Bargraph(uint8_t addr, uint8_t segmentCount);
     void Bargraph::begin(void);
-    void Bargraph::output(char output[SEGMENT_COUNT + 1]);
-    void Bargraph::setFormat(char format[SEGMENT_COUNT + 1]);
-    void Bargraph::formattedOutput(char output[SEGMENT_COUNT + 1]);
-    void Bargraph::formattedOutput(char format[SEGMENT_COUNT + 1], char output[SEGMENT_COUNT + 1]);
+    void Bargraph::output(char output[]);
+    void Bargraph::setFormat(char format[]);
+    void Bargraph::formattedOutput(char output[]);
+    void Bargraph::formattedOutput(char format[], char output[]);
     void Bargraph::clear(void);
   protected:
     uint8_t i2c_addr;
-    char _format[SEGMENT_COUNT + 1];
-    char _output[SEGMENT_COUNT + 1];
+    uint8_t _segments;
+    char _format[];
+    char _output[];
     Adafruit_Bargraph bar;
 };
 

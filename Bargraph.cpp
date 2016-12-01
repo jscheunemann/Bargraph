@@ -33,10 +33,16 @@
 
 Bargraph::Bargraph() {
   this->i2c_addr = DEFAULT_ADDR;
+  this->_segments = DEFAULT_SEGMENT_COUNT;
 }
 
 Bargraph::Bargraph(uint8_t addr) {
   this->i2c_addr = addr;
+}
+
+Bargraph::Bargraph(uint8_t addr, uint8_t segmentCount) {
+  this->i2c_addr = addr;
+  this->_segments = segmentCount;
 }
 
 void Bargraph::begin(void) {
@@ -44,16 +50,16 @@ void Bargraph::begin(void) {
   this->bar.begin(this->i2c_addr);
 }
 
-void Bargraph::setFormat(char format[SEGMENT_COUNT + 1]) {
+void Bargraph::setFormat(char format[]) {
   sprintf(this->_format, format);
 }
 
-void Bargraph::formattedOutput(char output[SEGMENT_COUNT + 1]) {
+void Bargraph::formattedOutput(char output[]) {
   this->formattedOutput(this->_format, output);
 }
 
-void Bargraph::formattedOutput(char format[SEGMENT_COUNT + 1], char output[SEGMENT_COUNT + 1]) {
-  for (int i = 0; i < SEGMENT_COUNT; i++) {
+void Bargraph::formattedOutput(char format[], char output[]) {
+  for (int i = 0; i < this->_segments; i++) {
     uint8_t color = LED_OFF;
 
     switch (format[i]) {
@@ -68,23 +74,23 @@ void Bargraph::formattedOutput(char format[SEGMENT_COUNT + 1], char output[SEGME
         break;
     }
 
-    bar.setBar(SEGMENT_COUNT - i - 1, color);
+    bar.setBar(this->_segments - i - 1, color);
   }
 
   this->bar.writeDisplay();
 }
 
-void Bargraph::output(char output[SEGMENT_COUNT + 1]) {
-  char segments[SEGMENT_COUNT + 1];
-  memset(segments, '1', SEGMENT_COUNT);
-  segments[SEGMENT_COUNT + 1] = '\0';
+void Bargraph::output(char output[]) {
+  char segments[this->_segments + 1];
+  memset(segments, '1', this->_segments);
+  segments[this->_segments + 1] = '\0';
   this->formattedOutput(output, segments);
 }
 
 void Bargraph::clear(void) {
-  char segments[SEGMENT_COUNT + 1];
-  memset(segments, '-', SEGMENT_COUNT);
-  segments[SEGMENT_COUNT + 1] = '\0';
+  char segments[this->_segments + 1];
+  memset(segments, '-', this->_segments);
+  segments[this->_segments + 1] = '\0';
 
   this->output(segments);
 }
