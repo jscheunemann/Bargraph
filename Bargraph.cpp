@@ -31,14 +31,9 @@
 
 #include "Bargraph.h"
 
-Bargraph::Bargraph() {
-  this->i2c_addr = DEFAULT_ADDR;
-  this->_segments = DEFAULT_SEGMENT_COUNT;
-}
+Bargraph::Bargraph() : Bargraph(DEFAULT_ADDR, DEFAULT_SEGMENT_COUNT) { }
 
-Bargraph::Bargraph(uint8_t addr) {
-  this->i2c_addr = addr;
-}
+Bargraph::Bargraph(uint8_t addr) : Bargraph(addr, DEFAULT_SEGMENT_COUNT) { }
 
 Bargraph::Bargraph(uint8_t addr, uint8_t segmentCount) {
   this->i2c_addr = addr;
@@ -46,16 +41,19 @@ Bargraph::Bargraph(uint8_t addr, uint8_t segmentCount) {
 }
 
 void Bargraph::begin(void) {
-  this->bar = Adafruit_Bargraph();
+  this->bar = Adafruit_24bargraph();
   this->bar.begin(this->i2c_addr);
+  this->_format = new char[this->_segments + 1];
+  this->_output = new char[this->_segments + 1];
 }
 
 void Bargraph::setFormat(char format[]) {
-  sprintf(this->_format, format);
+  memcpy(this->_format, format, this->_segments);
 }
 
 void Bargraph::formattedOutput(char output[]) {
-  this->formattedOutput(this->_format, output);
+  memcpy(this->_output, output, this->_segments);
+  this->formattedOutput(this->_format, this->_output);
 }
 
 void Bargraph::formattedOutput(char format[], char output[]) {

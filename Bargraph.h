@@ -47,14 +47,15 @@ class Bargraph {
     void Bargraph::output(char output[]);
     void Bargraph::setFormat(char format[]);
     void Bargraph::formattedOutput(char output[]);
-    void Bargraph::formattedOutput(char format[], char output[]);
+    void Bargraph::formattedOutput(char _format[], char output[]);
     void Bargraph::clear(void);
   protected:
     uint8_t i2c_addr;
+  private:
     uint8_t _segments;
-    char _format[];
-    char _output[];
-    Adafruit_Bargraph bar;
+    char* _format;
+    char* _output;
+    Adafruit_24bargraph bar;
 };
 
 
