@@ -136,12 +136,20 @@ void Bargraph::output(uint8_t bars) {
   this->formattedOutput(segments);
 }
 
+void Bargraph::increment(void) {
+  this->addBar();
+}
+
 void Bargraph::addBar(void) {
   this->addBars(1);
 }
 
 void Bargraph::addBars(uint8_t bars) {
   this->_addBars(bars);
+}
+
+void Bargraph::decrement(void) {
+  this->removeBar();
 }
 
 void Bargraph::removeBar(void) {
@@ -168,6 +176,10 @@ void Bargraph::_addBars(int8_t bars) {
 
   if (count > 0) {
     this->output(count);
+  }
+  else {
+    uint8_t zero = 0;
+    this->output(zero);
   }
 }
 

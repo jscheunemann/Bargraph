@@ -58,8 +58,10 @@ class Bargraph {
     void Bargraph::setBarDirection(uint8_t bargraphDirection);
     void Bargraph::formattedOutput(char output[]);
     void Bargraph::formattedOutput(char _format[], char output[]);
+    void Bargraph::increment(void);
     void Bargraph::addBar(void);
     void Bargraph::addBars(uint8_t bars);
+    void Bargraph::decrement(void);
     void Bargraph::removeBar(void);
     void Bargraph::removeBars(uint8_t bars);
     uint8_t Bargraph::getSegmentCount();
