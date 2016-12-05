@@ -117,20 +117,21 @@ void Bargraph::output(uint8_t bars) {
   memset(segments, '1', this->_segments);
   segments[this->_segments + 1] = '\0';
 
-  if (this->_bargraphDirection == RIGHT_TO_LEFT) {
-    for (int i = 0; i < this->_segments; i++) {
-      if (i < bars) {
-        segments[i] = '0';
-      }
-    }
-  }
-  else {
+  if (this->_bargraphDirection == LEFT_TO_RIGHT) {
     for (int i = this->_segments; i >= 0; i--) {
       if (i >= bars) {
         segments[i] = '0';
       }
     }
   }
+  else {
+    for (int i = 0; i < this->_segments; i++) {
+      if (i < this->_segments - bars) {
+        segments[i] = '0';
+      }
+    }
+  }
+
 
   this->formattedOutput(segments);
 }
