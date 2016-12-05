@@ -132,7 +132,6 @@ void Bargraph::output(uint8_t bars) {
     }
   }
 
-
   this->formattedOutput(segments);
 }
 
@@ -193,4 +192,12 @@ void Bargraph::clear(void) {
 
 uint8_t Bargraph::getSegmentCount() {
   return this->_segments;
+}
+
+void Bargraph::operator++() {
+  this->addBar();
+}
+
+void Bargraph::operator--() {
+  this->removeBar();
 }

@@ -66,6 +66,8 @@ class Bargraph {
     void Bargraph::removeBars(uint8_t bars);
     uint8_t Bargraph::getSegmentCount();
     void Bargraph::clear(void);
+    void operator++();
+    void operator--();
   protected:
     uint8_t i2c_addr;
   private:
