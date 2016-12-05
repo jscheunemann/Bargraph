@@ -38,6 +38,13 @@
 #define DEFAULT_SEGMENT_COUNT 24
 #define DEFAULT_ADDR 0x70
 
+#define RIGHT_TO_LEFT 0
+#define LEFT_TO_RIGHT 1
+
+#define GREEN 0
+#define YELLOW 1
+#define RED 2
+
 class Bargraph {
   public:
     Bargraph::Bargraph();
@@ -45,17 +52,27 @@ class Bargraph {
     Bargraph::Bargraph(uint8_t addr, uint8_t segmentCount);
     void Bargraph::begin(void);
     void Bargraph::output(char output[]);
+    void Bargraph::output(uint8_t bars);
+    void Bargraph::setColor(uint8_t color);
     void Bargraph::setFormat(char format[]);
+    void Bargraph::setBarDirection(uint8_t bargraphDirection);
     void Bargraph::formattedOutput(char output[]);
     void Bargraph::formattedOutput(char _format[], char output[]);
+    void Bargraph::addBar(void);
+    void Bargraph::addBars(uint8_t bars);
+    void Bargraph::removeBar(void);
+    void Bargraph::removeBars(uint8_t bars);
+    uint8_t Bargraph::getSegmentCount();
     void Bargraph::clear(void);
   protected:
     uint8_t i2c_addr;
   private:
     uint8_t _segments;
+    uint8_t _bargraphDirection;
     char* _format;
     char* _output;
     Adafruit_24bargraph bar;
+    void Bargraph::_addBars(int8_t);
 };
 
 

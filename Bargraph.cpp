@@ -38,13 +38,21 @@ Bargraph::Bargraph(uint8_t addr) : Bargraph(addr, DEFAULT_SEGMENT_COUNT) { }
 Bargraph::Bargraph(uint8_t addr, uint8_t segmentCount) {
   this->i2c_addr = addr;
   this->_segments = segmentCount;
+  this->_bargraphDirection = RIGHT_TO_LEFT;
+  this->_format = new char[this->_segments + 1];
+  this->_output = new char[this->_segments + 1];
+
+  memset(this->_format, 'G', this->_segments);
+  this->_format[this->_segments + 1] = '\0';
 }
 
 void Bargraph::begin(void) {
   this->bar = Adafruit_24bargraph();
   this->bar.begin(this->i2c_addr);
-  this->_format = new char[this->_segments + 1];
-  this->_output = new char[this->_segments + 1];
+}
+
+void Bargraph::setBarDirection(uint8_t bargraphDirection) {
+  this->_bargraphDirection = bargraphDirection;
 }
 
 void Bargraph::setFormat(char format[]) {
@@ -54,6 +62,25 @@ void Bargraph::setFormat(char format[]) {
 void Bargraph::formattedOutput(char output[]) {
   memcpy(this->_output, output, this->_segments);
   this->formattedOutput(this->_format, this->_output);
+}
+
+void Bargraph::setColor(uint8_t color) {
+  switch (color) {
+    case YELLOW:
+      memset(this->_format, 'Y', this->_segments);
+      this->_format[this->_segments + 1] = '\0';
+      break;
+    case RED:
+      memset(this->_format, 'R', this->_segments);
+      this->_format[this->_segments + 1] = '\0';
+      break;
+    default:
+      memset(this->_format, 'G', this->_segments);
+      this->_format[this->_segments + 1] = '\0';
+      break;
+  }
+
+  this->_addBars(0);
 }
 
 void Bargraph::formattedOutput(char format[], char output[]) {
@@ -85,10 +112,72 @@ void Bargraph::output(char output[]) {
   this->formattedOutput(output, segments);
 }
 
+void Bargraph::output(uint8_t bars) {
+  char segments[this->_segments + 1];
+  memset(segments, '1', this->_segments);
+  segments[this->_segments + 1] = '\0';
+
+  if (this->_bargraphDirection == RIGHT_TO_LEFT) {
+    for (int i = 0; i < this->_segments; i++) {
+      if (i < bars) {
+        segments[i] = '0';
+      }
+    }
+  }
+  else {
+    for (int i = this->_segments; i >= 0; i--) {
+      if (i >= bars) {
+        segments[i] = '0';
+      }
+    }
+  }
+
+  this->formattedOutput(segments);
+}
+
+void Bargraph::addBar(void) {
+  this->addBars(1);
+}
+
+void Bargraph::addBars(uint8_t bars) {
+  this->_addBars(bars);
+}
+
+void Bargraph::removeBar(void) {
+  this->removeBars(1);
+}
+
+void Bargraph::removeBars(uint8_t bars) {
+  this->_addBars(bars * -1);
+}
+
+void Bargraph::_addBars(int8_t bars) {
+  uint8_t count = 0;
+
+  for (int i = 0; i < this->_segments; i++) {
+    if (this->_output[i] == '1') {
+      count++;
+    }
+  }
+
+  count = count + bars;
+
+  count = (count < this->_segments) ? count : this->_segments;
+  count = (count > 0) ? count : 0;
+
+  if (count > 0) {
+    this->output(count);
+  }
+}
+
 void Bargraph::clear(void) {
   char segments[this->_segments + 1];
   memset(segments, '-', this->_segments);
   segments[this->_segments + 1] = '\0';
 
   this->output(segments);
+}
+
+uint8_t Bargraph::getSegmentCount() {
+  return this->_segments;
 }
